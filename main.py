@@ -7,17 +7,16 @@ main_url = 'https://api.bybit.com/v2/public/tickers'
 
 # GET requests are used to retrieve information from the Bybit API 
 # such as market data(coin prices and etc.).
-def http_get(url, symbol):
-    params = {
-         'category': 'inverse',
-        'symbol': f'{symbol}USDT',
-    }
-    response = requests.get(url, params=params)
+def http_get(url, params=None):
+    try:
+        response = requests.get(url, params=params)
+    except Exception as e:
+        return print(e)
 
     if response.status_code == 200:
-        return response.json()
+        return response
     else:
-        print(f'Failed to retrieve data: {response.status_code}')
+        return False
 
 # POST requests are used for executing trading operations,
 # such as buying and selling assets.
@@ -26,6 +25,22 @@ def http_get(url, symbol):
 def http_post():
     pass
     
+# Contains the primary code to be executed when the script runs directly.
+def main():
+    # Check internet connection
+    if not http_get("https://www.google.com"):
+        return
+    
+    # Example
+    params = {
+        'category': 'inverse',
+        'symbol': 'BTCUSDT',
+    }
+    response = http_get(main_url, params)
+    pprint.pprint(response.json())
 
-pprint.pprint(http_get(main_url, "SUPER"))
 
+# Ensures code runs only when the script is executed directly,
+# not when imported as a module
+if __name__ == "__main__":
+    main()
